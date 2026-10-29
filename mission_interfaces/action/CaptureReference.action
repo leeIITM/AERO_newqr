@@ -1,0 +1,11 @@
+# qr_detector: memorise the first QR code seen by the camera as the matching reference.
+# The reference comes only from the camera (never loaded from disk); a copy is saved for logging.
+# No timeout: the goal runs until a QR is seen or the goal is cancelled (the mission tree moves the drone
+# in a small search pattern meanwhile).
+---
+bool success
+string message
+string image_path         # saved warp of the captured QR ("" if saving failed)
+string decoded_text
+---
+float32 elapsed           # s since the goal started

@@ -1,0 +1,20 @@
+# qr_centering (stage 10): fly to `target`, visual-servo over the MATCHED QR (any QR if any_qr) until within tol_px, then hover
+# `hold_time` s over it, nudging back over the QR with vision once a second. Corrections that would end within centre_clearance of mapped red are shrunk or skipped.
+geometry_msgs/Point target    # local NED
+float32 yaw
+uint8 max_iters
+float32 tol_px
+float32 gain                  # fraction of the measured offset applied per centring iteration
+float32 approach_tolerance    # m for the first GoTo
+float32 hold_time             # s hover hold after centring; 0 = no hold
+float32 hold_gain             # fraction of the measured offset applied per hold nudge
+bool any_qr                   # true = centre on any QR in view (target_search's best candidate, no match)
+---
+bool success                  # true = the hold was completed (centred or not)
+string message
+bool locked                   # centred within tol_px
+geometry_msgs/Point position  # final setpoint
+---
+uint8 iteration
+float32 error_px
+float32 hold_remaining        # s left in the hold (0 while centring)

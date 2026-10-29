@@ -1,0 +1,19 @@
+# lawnmower_search (stage 9): serpentine over the field, stopping at the first QR that matches the reference.
+#   Row r starts at start + right(heading) * r * row_step and runs `length` m along `heading`;
+#   rows alternate direction. Heading and altitude are held for the whole search.
+geometry_msgs/Point start     # local NED of the first row's start; z = search altitude (NED z)
+float32 heading               # rad, rows run along this heading
+float32 length                # m per row
+float32 row_step              # m between rows, stepping to the RIGHT of `heading`
+uint8 rows
+float32 speed                 # m/s; <= 0 = flight controller default
+float32 waypoint_tolerance    # m; <= 0 = flight controller default
+---
+bool success                  # true = matched QR found
+string message
+geometry_msgs/Point target    # local NED of the matched QR centre, z = start.z
+string decoded_text
+float32 score
+---
+uint32 waypoint
+string state

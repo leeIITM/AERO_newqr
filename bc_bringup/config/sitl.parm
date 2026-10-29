@@ -1,0 +1,10 @@
+# Loaded after ArduPilot's copter.parm + gazebo-iris.parm by bc_sim/scripts/run_sitl.sh (EEPROM wiped on
+# every start unless wipe:=false). Simulation-only settings; the real pre-arm checks (EKF, GPS) stay on.
+# MAVROS is the GCS link: no failsafe on a missing GCS heartbeat.
+FS_GCS_ENABLE 0
+# No RC transmitter in SITL (mode:=lite runs without MAVProxy's RC input): no throttle failsafe
+FS_THR_ENABLE 0
+LOG_DISARMED 0
+ARMING_CHECK 1
+# Payload drop output: DO_SET_SERVO only drives an output whose function is Disabled
+SERVO9_FUNCTION 0

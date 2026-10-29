@@ -1,0 +1,8 @@
+# Delivery zone geofence for target_search: one corner per line, "lat,lon" in decimal degrees.
+# At least 3 corners; the search flies the minimum-area rectangle around them (rows along its long side),
+# kept search_wall_margin metres inside. Blank lines and lines starting with '#' are ignored.
+# Replace these with the surveyed corners of the competition delivery zone.
+13.08281678,80.27051737
+13.08301441,80.27051737
+13.08301441,80.27070200
+13.08281678,80.27070200

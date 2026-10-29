@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>bc_common</name>
+  <version>0.1.0</version>
+  <description>Shared helpers: geometry, camera stream worker, image conversion, flight_controller client</description>
+  <maintainer email="harrydybalaforever123@gmail.com">AeroTHON team</maintainer>
+  <license>Apache-2.0</license>
+
+  <depend>rclpy</depend>
+  <depend>action_msgs</depend>
+  <depend>sensor_msgs</depend>
+  <depend>geometry_msgs</depend>
+  <depend>mission_interfaces</depend>
+  <depend>std_srvs</depend>
+
+  <test_depend>python3-pytest</test_depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>

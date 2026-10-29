@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>payload_drop</name>
+  <version>0.1.0</version>
+  <description>Payload drop controller (two DO_SET_SERVO PWM commands, GUIDED) and geotagged survey frame
+    capture during the geofenced target search (structure of airdrop_controller / airdrop_survey).</description>
+  <maintainer email="harrydybalaforever123@gmail.com">AeroTHON team</maintainer>
+  <license>Apache-2.0</license>
+
+  <depend>rclpy</depend>
+  <depend>mission_interfaces</depend>
+  <depend>bc_common</depend>
+  <depend>std_msgs</depend>
+  <depend>std_srvs</depend>
+  <depend>sensor_msgs</depend>
+  <depend>mavros_msgs</depend>
+  <exec_depend>python3-opencv</exec_depend>
+  <exec_depend>python3-pil</exec_depend>
+
+  <test_depend>python3-pytest</test_depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>

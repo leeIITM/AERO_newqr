@@ -1,0 +1,15 @@
+# corridor_navigator: descend to corridor altitude over the entrance, settle, surge `length` along `heading`,
+# then (if exit_altitude_z is set) climb straight up at the exit before any sideways move.
+geometry_msgs/Point entry     # local NED x, y of the corridor entrance (banner); z ignored
+float32 heading               # rad
+float32 altitude_z            # local NED z inside the corridor (negative = above origin)
+float32 length                # m
+float32 speed                 # m/s for the surge
+float32 settle_time           # s hover after the descent
+float32 exit_altitude_z       # local NED z to climb to vertically at the exit; NaN = stay at corridor altitude
+---
+bool success
+string message
+geometry_msgs/Point exit_position   # where the vehicle is when the action ends (after the climb)
+---
+string state                  # descending | settling | surging | climbing

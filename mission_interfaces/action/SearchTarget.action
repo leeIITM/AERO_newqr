@@ -1,0 +1,38 @@
+# target_search: search the delivery zone (geofence) for the QR that matches the reference, keeping
+# clear of red zones seen by the camera.
+#   Rows: a serpentine along the zone's long side at `altitude`, spaced for `overlap` between photos.
+#   Red: every frame's red patches are projected to the ground into a grid map (any shape, several
+#        zones); the drone detours round red + red_zone_margin (Shiva007-RAndom avoidance.py).
+#   Stop: `confirm_matches` matched detections of the same QR outside the red zone.
+#   No match after the rows (+ revisits if max_revisits > 0): fly to the best-scoring QR seen
+#   (matched = false). No QR seen at all: failure.
+string geofence_file          # text file, one "lat,lon" corner of the delivery zone per line
+float32 altitude              # m above the take-off point
+float32 yaw                   # heading held during the search (rad); NaN = "wide ahead": the camera's long
+                              # image side along the rows, so red is seen further ahead
+float32 wall_margin           # m the flight area is shrunk inwards from the geofence rectangle
+float32 overlap               # overlap of neighbouring rows' footprints, 0..1
+uint8 rows                    # 0 = as many as it takes to cover the zone
+float32 speed                 # m/s
+float32 red_zone_margin       # m kept from any red
+uint8 confirm_matches         # matched detections of the same QR needed (repo: 2)
+uint16 max_revisits           # fly over ground the camera missed (e.g. skipped by a detour); 0 = off
+float32 revisit_time          # s budget for the revisits
+bool skip_fly_to_target       # true: stop after choosing the QR and report it (target_navigator flies there);
+                              # false: fly to it round the red before reporting (as before)
+---
+bool success
+string message
+bool matched                  # true = matched QR; false = best candidate
+float32 score
+string decoded_text
+geometry_msgs/Point target    # local NED of the chosen QR (z = the search altitude's NED z)
+float64 latitude              # the chosen QR's lat/lon (from the local frame's origin), for target_navigator
+float64 longitude
+uint16 red_zones              # separate red patches in the map
+float32 coverage              # fraction of the flight area the camera has looked at
+---
+string state
+string steering               # direct | detour | escape | blocked
+float32 best_score
+uint16 red_zones

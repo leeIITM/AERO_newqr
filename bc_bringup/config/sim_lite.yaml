@@ -1,0 +1,12 @@
+# Loaded after bc_bringup/config/mission.yaml by `sim_mission.launch.py field:=synthetic` (SITL mode:=lite).
+# The synthetic camera (bench_flight_controller sim_camera_node) renders straight down from the pose, like
+# the SIYI on its gimbal, and stamps each frame when it renders it.
+
+target_search:
+  ros__parameters:
+    camera_on_gimbal: true
+    camera_latency: 0.0
+
+qr_detector:
+  ros__parameters:
+    reference_save_path: "~/.ros/bc_sim_reference_qr.png"

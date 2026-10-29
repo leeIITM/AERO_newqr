@@ -1,0 +1,12 @@
+# payload_drop: release the payload with two PWM commands on one servo output (MAV_CMD_DO_SET_SERVO, in
+# GUIDED, no mode change): open_pwm, wait `interval` s, close_pwm. Zero / negative fields = node parameters.
+uint8 channel                 # SERVOn output (Cube Orange: 9 = AUX1)
+uint16 open_pwm               # us, releases the payload
+uint16 close_pwm              # us, back to the closed / reset position
+float32 interval              # s between the two commands
+---
+bool success
+string message
+uint16 payloads_delivered
+---
+string state

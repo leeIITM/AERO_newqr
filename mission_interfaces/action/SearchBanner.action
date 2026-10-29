@@ -1,0 +1,21 @@
+# banner_search: fly through `waypoints` and stop as soon as a banner of `color` is classified.
+#   Sway search (stage 4):        one waypoint at the end of the sway, detect_while_moving = true,
+#                                 dwell = [hover time at max sway].
+#   Blue entrance search (st. 11): predicted entrance + local pattern, detect_while_moving = false,
+#                                 dwell = seconds to look at each waypoint.
+string color                  # "green" | "blue"
+geometry_msgs/Point[] waypoints   # local NED
+float32 yaw                   # heading held during the search (rad, 0 = north, clockwise)
+float32 speed                 # m/s; <= 0 uses the flight controller default
+float32[] dwell               # s to hover and look at waypoint i (missing entries = 0)
+bool detect_while_moving
+---
+bool success                  # true = banner classified
+string message
+geometry_msgs/Point banner_estimate   # local NED of the banner centre at detection time
+geometry_msgs/Point drone_position    # drone position when it was classified
+uint32 waypoint_index
+string source
+---
+string state
+uint32 waypoint

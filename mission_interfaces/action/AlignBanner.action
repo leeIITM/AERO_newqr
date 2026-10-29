@@ -1,0 +1,21 @@
+# banner_align: fly to the banner estimate, then closed-loop position-based visual servoing until the
+# banner is centred and fully in view, measuring the corridor heading (perpendicular to the banner).
+string color
+geometry_msgs/Point initial_target   # local NED to fly to first (from SearchBanner); z = altitude to hold
+float32 expected_heading       # rad; the 180 deg ambiguity is resolved towards it
+float32 max_heading_correction # rad; candidates further than this from expected are rejected (<= 0: 25 deg)
+uint8 max_iters
+float32 tol_px
+float32 gain                   # fraction of the measured offset applied per iteration
+float32 settle_time            # s to wait after each correction
+---
+bool success                   # false only if cancelled or the flight controller failed
+string message
+bool locked                    # centred within tol_px with the banner fully in view
+bool heading_measured          # at least one heading candidate was accepted
+float32 corridor_heading       # last accepted candidate, else expected_heading
+geometry_msgs/Point banner_position  # final servo target (local NED)
+---
+uint8 iteration
+float32 error_px
+bool partial

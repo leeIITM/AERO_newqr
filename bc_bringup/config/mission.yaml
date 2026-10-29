@@ -1,0 +1,230 @@
+# Field parameters for the banner-corridor mission. Names and defaults follow the original script's
+# command-line options (--alt -> alt, --green-h-tol -> green_h_tol, ...).
+# Pass another copy with:  ros2 launch bc_bringup mission.launch.py params_file:=/path/to/field.yaml
+
+/**:
+  ros__parameters:
+    hfov_rad: 1.22                  # downward camera horizontal FOV (rad); used by detectors + sim camera
+
+mission_tree:
+  ros__parameters:
+    # heights are metres above the take-off pad (pad z recorded before take-off)
+    alt: 5.0                        # take-off / transit / banner search / QR search altitude (m)
+    surge1: 2.0                     # forward to the reference QR (m)
+    surge2: 2.0                     # forward after the reference QR (m)
+    max_sway: 20.0                  # max left sway searching the green banner (m)
+    sway_speed: 0.5                 # m/s (green and blue sway)
+    sway_end_hover: 3.0             # s hover at max sway
+    corridor_alt: 3.0               # altitude inside both corridors (m)
+    corridor_surge: 10.0            # distance through each corridor (m)
+    corridor_speed: 0.9             # m/s
+    corridor_settle: 1.0            # s after descending into a corridor
+    wall_offset: 19.0               # lateral shift after the corridor = wall_offset - x (1 m from the 20 m wall)
+    wall_forward: 1.0               # m
+    speed: 1.2                      # general GoTo speed (m/s)
+    stabilise_hold: 1.5
+    # stage 2 reference QR: NO timeout. Hover over the surge-1 point, then fly growing squares round it
+    # until the QR is seen (progress logged every 10 s; stop the mission yourself to give up)
+    ref_search_hover: 10.0          # s hovering before the search pattern starts
+    ref_search_step: 1.0            # m: squares of half-size 1, 2, 3 m (then again from 1 m)
+    ref_search_max: 3.0             # m
+    ref_search_dwell: 1.5           # s at each corner
+    ref_search_speed: 0.5           # m/s
+    # stage 9 QR search: target_search (geofenced, red-zone detection + avoidance) | lawnmower (script, no red)
+    qr_search: target_search
+    payload_drop: true              # target_search only: navigator -> centring + hold -> payload drop (also
+                                    # over the best candidate); false = no drop, the search flies to the QR
+    # target_search (suas_aer target_search + Shiva007-RAndom red-zone avoidance)
+    geofence_file: ""               # REQUIRED for target_search on the field: delivery zone corners, one
+                                    # "lat,lon" per line (see delivery_zone.example.txt). sim_mission.launch.py
+                                    # passes the Gazebo room (bc_sim/config/delivery_zone.gazebo.txt)
+    search_wall_margin: 1.0         # m inside the geofence
+    search_overlap: 0.2             # overlap of neighbouring rows' camera footprints
+    search_rows: 0                  # 0 = as many as the zone needs
+    search_yaw_mode: wide_ahead     # wide_ahead: camera's long side along the rows (sees red sooner);
+                                    # corridor: hold the corridor heading
+    red_zone_margin: 2.0            # m kept from any red seen
+    confirm_matches: 2              # matched detections of one QR before stopping
+    max_revisits: 0                 # fly over ground missed by detours (0 = off)
+    revisit_time: 300.0
+    # stage 9 lawnmower (qr_search: lawnmower; script --lawnmower-length, --step)
+    lawnmower_length: 18.0          # m per row along the corridor heading
+    lawnmower_step: 4.0             # m between rows, stepping right
+    lawnmower_rows: 5
+    lawnmower_tolerance: 0.6        # m row-end acceptance
+    # stage 10
+    align_duration: 15.0            # s hover hold over the matched QR
+    center_tol: 25.0                # px
+    center_iters: 6
+    center_gain: 0.7
+    hold_gain: 0.5                  # 1 Hz vision nudges during the hold
+    qr_approach_tolerance: 0.25
+    banner_settle: 0.5
+    max_heading_correction_deg: 25.0
+    # stage 11 return corridor
+    return_exit_gap: 1.0            # blue search starts corridor_surge + gap = 11 m from the green banner
+    blue_max_sway: 20.0             # max LEFT sway (facing back down the corridors) for the blue banner (m)
+    turn_hold: 3.0
+    home_low_alt: 2.0
+    server_timeout: 30.0
+
+banner_detector:
+  ros__parameters:
+    green_h_center: -1              # OpenCV hue 0-179; -1 = from #00B140 (71)
+    green_h_tol: 15                 # hue tolerance (OpenCV hue units)
+    green_s_min: 100
+    green_v_min: 70
+    green_min_area: 0.0004          # fraction of the frame
+    blue_h_center: 112              # #0000FF is 120 on paper, a filmed blue banner reads ~104-118
+    blue_h_tol: 15
+    blue_s_min: 100
+    blue_v_min: 70
+    blue_min_area: 0.0004
+    min_banner_ratio: 8.0
+    min_banner_fill: 0.60
+    banner_persistence: 3
+    check_physical_size: true       # launch forces false for bench + real camera (as --bench-sim did)
+    min_length_m: 1.8
+    max_length_m: 5.5
+    ocr_threads: 2
+    ocr_min_ratio: 3.0              # only elongated regions are sent to OCR (one crop per frame)
+    use_ocr: true                   # RapidOCR if installed, else shape-only
+    max_rate_hz: 30.0
+
+qr_detector:
+  ros__parameters:
+    match_thresh: 0.88
+    reject_text_mismatch: true      # false = original behaviour (grid score alone even if texts differ)
+    grid_size: 21
+    max_rate_hz: 15.0
+    reference_save_path: "~/aerothon_ws/reference_qr_memorized.png"
+    capture_edge_margin: 0.03       # reference capture ignores a QR within 3 % of the image border (cut / partial)
+    capture_centre_fraction: 0.5    # an UNDECODED QR is memorised only if its centre is in the central 50 % of the image
+
+banner_search:
+  ros__parameters:
+    brake_time: 1.2
+
+banner_align:
+  ros__parameters:
+    frame_timeout: 1.0
+    servo_tolerance: 0.1            # m: servo corrections must arrive this close before measuring again
+
+lawnmower_search:
+  ros__parameters:
+    brake_time: 1.2                 # s hold after the matched QR is seen
+
+target_navigator:
+  ros__parameters:
+    use_safe_goto: true             # fly to the target QR round the mapped red (target_search /safe_goto)
+    arrival_tolerance: 1.0          # m from the QR's coordinates before centring
+    navigator_speed: 1.2
+    safe_goto_timeout: 5.0
+
+payload_drop:
+  ros__parameters:
+    drop_channel: 9                 # SERVOn (Cube Orange: 9 = AUX1); set SERVO9_FUNCTION = 0 on the autopilot
+    open_pwm: 1900                  # us: release
+    close_pwm: 1100                 # us: closed / reset
+    drop_interval: 2.0              # s between the two PWM commands
+    pre_drop_settle: 0.5            # s hover after centring, before the release
+    simulate: false                 # launch sets true on the bench without MAVROS
+    verify_rc_out: true
+    command_timeout: 5.0
+
+survey_capture:
+  ros__parameters:
+    save_dir: "~/bc_geotag"         # one folder per search: frameNNNNNN.jpg (EXIF GPS + attitude) + index.csv
+    capture_spacing: 3.0            # m of travel between geotagged frames during the target search
+    jpeg_quality: 92
+    gps_timeout: 2.0                # s: older fix -> lat/lon from the local pose + EKF origin
+    min_height: 1.0
+    frame_timeout: 1.0
+
+target_search:
+  ros__parameters:
+    camera_latency: 0.25            # s: frame stamp -> when it was really taken (RTSP); MEASURE on the field
+    camera_on_gimbal: true          # SIYI gimbal keeps the camera straight down: roll/pitch not applied
+    max_tilt: 0.12                  # rad, only with camera_on_gimbal: false
+    geofence_tolerance: 1.0
+    accel: 3.0                      # m/s^2, carrot point
+    max_lead: 0.0                   # m, 0 = max(1, 1.1 x speed)
+    cluster_radius: 1.5
+    no_frames_timeout: 10.0
+    transit_pad: 10.0
+    search_mode: auto               # auto: the lawnmower from the geofence is flown as ArduPilot AUTO missions;
+                                    # GUIDED only to brake + fly round a red patch, then the rest of the rows
+                                    # (cut at the red) is pushed again in AUTO. guided: all in GUIDED
+
+red_zone_detector:
+  ros__parameters:
+    min_area: 100.0                 # px^2
+    hsv_lower1: [0, 80, 40]         # red wraps the hue wheel: two ranges
+    hsv_upper1: [15, 255, 255]
+    hsv_lower2: [165, 80, 40]
+    hsv_upper2: [180, 255, 255]
+    kernel_size: 7
+    contour_epsilon: 0.01
+    process_every_n: 1
+    publish_debug_image: false
+
+qr_centering:
+  ros__parameters:
+    frame_timeout: 1.5
+    servo_tolerance: 0.1
+    settle_time: 0.5
+    hold_nudge_period: 1.0          # s between vision nudges during the 15 s hold
+    hold_deadband_px: 10.0
+    centre_clearance: 1.0           # m: never centre / nudge closer than this to mapped red
+
+corridor_navigator:
+  ros__parameters:
+    surge_tolerance: 0.10           # m: really reach the end of the corridor
+    exit_hold: 1.0
+    climb_tolerance: 0.15
+    climb_hold: 0.5
+
+flight_controller:
+  ros__parameters:
+    # real controller (MAVROS)
+    goto_local_ned_mode: guided     # the script flies every leg with GUIDED position setpoints
+    goto_body_mode: guided
+    default_speed: 1.2
+    default_acceptance_radius: 0.35
+    guided_only: false              # false = ArduPilot LAND mode, as the script's drone.land()
+    stream_rate_hz: 20
+    # bench controller (bench:=true)
+    thrust: 0.20
+    sim_max_speed: 2.0
+    sim_max_climb: 0.8
+    rate_hz: 20.0                   # bench pose rate (MAVROS streams at stream_rate_hz = 20)
+    origin_lat: 13.0827             # simulated lat/lon of the bench local origin (geofence files)
+    origin_lon: 80.2707
+
+siyi_camera:
+  ros__parameters:
+    camera_src: ""                  # "" = rtsp://192.168.144.25:8554/<stream>.264
+    stream: main
+    rtsp_transport: udp             # udp: lowest latency; tcp: no lost packets (no HEVC ref errors), more latency
+    ffmpeg_log_level: quiet         # quiet | error | warning: FFmpeg decoder messages ("Could not find ref ...")
+
+sim_camera:
+  ros__parameters:
+    # 960x540 at 5 Hz: the Python renderer can't keep up with more on the Pi next to the other nodes
+    width: 960
+    height: 540
+    rate_hz: 5.0
+    # synthetic field (Mission 2 spec): boards 11.5 ft long with a 1-inch white border, corridors 11.5 ft wide
+    green_sway: 7.5                 # m left of the take-off line to the green ground board
+    green_forward: 4.3              # m ahead of the pad to the green ground board
+    corridor_length: 10.0
+    corridor_gap: 1.0               # m between the green and blue corridors
+    wall_height: 3.8                # m: the drone at 5 m clears the walls, at 3 m it is between them
+    arch_height: 4.0                # m: the drone passes under the arch at 3 m, not at 5 m
+    board_offset: 0.4               # m from a ground board to its arch
+    field_yaw_deg: 0.0              # corridors rotated from the take-off heading (clockwise +)
+
+mission_hud:
+  ros__parameters:
+    match_thresh: 0.88
+    max_rate_hz: 15.0

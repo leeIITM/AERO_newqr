@@ -1,0 +1,17 @@
+# target_navigator: fly to a geographic waypoint (the target QR found by target_search) at the given height,
+# keeping clear of the red mapped during the search (target_search's /safe_goto), heading held.
+float64 latitude
+float64 longitude
+float32 z                     # local NED z to fly at (the search altitude)
+float32 yaw                   # rad; NaN = keep
+float32 speed                 # m/s; <= 0 = default
+float32 tolerance             # m, arrival check; <= 0 = node parameter (1.0)
+---
+bool success
+string message
+geometry_msgs/Point target    # the waypoint in local NED
+geometry_msgs/Point position  # vehicle position on arrival
+bool detoured
+---
+string state
+float32 distance              # m to the waypoint

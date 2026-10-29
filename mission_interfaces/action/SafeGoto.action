@@ -1,0 +1,12 @@
+# target_search: fly to a local-NED point keeping clear of the red mapped during the search.
+# Straight (a flight_controller GoTo) when the line is clear of red + margin; otherwise the red-zone
+# navigator's detour, then a final GoTo onto the point.
+geometry_msgs/Point target    # local NED
+float32 yaw                   # rad; NaN = keep
+float32 speed                 # m/s; <= 0 = default
+---
+bool success
+string message
+bool detoured
+---
+string steering

@@ -1,0 +1,5 @@
+# banner_detector: choose which banner colour to classify. "" stops processing.
+string color          # "green" | "blue" | ""
+---
+bool success
+string message

@@ -1,0 +1,8 @@
+# Delivery zone (geofence) of the Gazebo world aerothon_mission2_ardupilot.sdf, one 'lat,lon' corner per line:
+# the walled room X 13-53 m (east), Y 0-40 m (north) from the world origin 13.0827 N, 80.2707 E, which is
+# SITL's home (sitl.launch.py home:=13.0827,80.2707,10,0). ArduPilot flat-earth scaling
+# (111318.845 m per degree of latitude, x cos(lat) for longitude).
+13.08270000,80.27081989
+13.08305933,80.27081989
+13.08305933,80.27118880
+13.08270000,80.27118880

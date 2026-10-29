@@ -1,0 +1,7 @@
+# Delivery zone of the synthetic bench field (camera:=sim), one 'lat,lon' corner per line.
+# Local NED N 13..35 m, E -21..-1 m from the bench origin (bench_flight_controller origin_lat/origin_lon:
+# 13.0827, 80.2707).
+13.08281678,80.27050633
+13.08301441,80.27050633
+13.08301441,80.27069078
+13.08281678,80.27069078

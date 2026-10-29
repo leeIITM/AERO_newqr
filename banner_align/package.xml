@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>banner_align</name>
+  <version>0.1.0</version>
+  <description>Position-based visual servoing over a banner; measures the corridor heading</description>
+  <maintainer email="harrydybalaforever123@gmail.com">AeroTHON team</maintainer>
+  <license>Apache-2.0</license>
+
+  <depend>rclpy</depend>
+  <depend>mission_interfaces</depend>
+  <depend>bc_common</depend>
+
+  <test_depend>python3-pytest</test_depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>

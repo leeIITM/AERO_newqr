@@ -1,0 +1,18 @@
+# Fly a list of local-NED waypoints as ONE ArduPilot AUTO mission (target_search's lawnmower rows), then
+# back to GUIDED holding at the last waypoint. Requires a completed Takeoff.
+# Cancel -> GUIDED at once, holding where the drone is (it brakes): used when a red patch is seen.
+
+float32[] north             # local NED (m), same frame as GoTo FRAME_LOCAL_NED; one entry per waypoint
+float32[] east
+float32 down                # NED z of every waypoint (m)
+float32 yaw                 # heading held on every leg (rad, 0 = north, clockwise +); NaN = ArduPilot's default
+float32 speed               # m/s; <= 0 uses the controller default
+float32 acceptance_radius   # m; <= 0 uses the controller default
+---
+bool success
+string message
+int32 reached               # waypoints passed (0 .. number of waypoints)
+geometry_msgs/Point final_position  # local NED
+---
+int32 current_index         # waypoint being flown to (0-based)
+float32 distance_remaining  # m to that waypoint
