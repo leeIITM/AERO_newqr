@@ -149,7 +149,7 @@ class MessageCache:
             return [m for n, m in self.history if n > mark]
 
     def wait_for(self, mark, pred=None, timeout=1.0, cancel=None):
-        """Newest message after `mark` with pred(msg) true, waiting up to `timeout` s; else None."""
+        """Newest 11message after `mark` with pred(msg) true, waiting up to `timeout` s; else None."""
         deadline = time.monotonic() + timeout
         while True:
             msg = self.find_since(mark, pred)

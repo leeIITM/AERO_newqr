@@ -191,7 +191,7 @@ class FlightController(Node):
             return
         self.streams_requested = True
         self.stream_client.call_async(StreamRate.Request(stream_id=0, message_rate=rate, on_off=True))
-        self.get_logger().info(f"Requested {rate} Hz telemetry streams from new ArduPilot.")
+        self.get_logger().info(f"Requested {rate} Hz telemetry streams from new11 ArduPilot.")
 
     # ---------------- velocity commands ----------------
 
