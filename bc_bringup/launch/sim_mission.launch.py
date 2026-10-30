@@ -49,23 +49,31 @@ def launch_setup(context):
         else os.path.join(sim, "config", "delivery_zone.gazebo.txt"))
     extra = LaunchConfiguration("extra_params_file").perform(context) or \
         os.path.join(sim, "config", "sim_lite.yaml" if synthetic else "sim_mission.yaml")
+    camera = LaunchConfiguration("camera").perform(context)
+    camera_src = LaunchConfiguration("camera_src").perform(context)
     out = []
     if LaunchConfiguration("with_sitl").perform(context).lower() in ("1", "true", "yes", "on"):
+        sitl_args = {"mode": "lite" if synthetic else "gazebo"}
+        if camera == "siyi":
+            sitl_args["camera"] = "siyi"
         out.append(IncludeLaunchDescription(
             PythonLaunchDescriptionSource(os.path.join(sim, "launch", "sitl.launch.py")),
-            launch_arguments={"mode": "lite" if synthetic else "gazebo"}.items()))
+            launch_arguments=sitl_args.items()))
+    mission_args = {
+        "bench": "false",
+        "spin_motors": "false",
+        "start_mavros": "false",
+        "camera": camera,
+        "extra_params_file": extra,
+        "geofence_file": geofence,
+        "hud": LaunchConfiguration("hud"),
+        "show_window": LaunchConfiguration("show_window"),
+    }
+    if camera_src:
+        mission_args["camera_src"] = camera_src
     out.append(IncludeLaunchDescription(
         PythonLaunchDescriptionSource(mission),
-        launch_arguments={
-            "bench": "false",
-            "spin_motors": "false",
-            "start_mavros": "false",
-            "camera": "none",
-            "extra_params_file": extra,
-            "geofence_file": geofence,
-            "hud": LaunchConfiguration("hud"),
-            "show_window": LaunchConfiguration("show_window"),
-        }.items()))
+        launch_arguments=mission_args.items()))
     return out
 
 
@@ -79,6 +87,10 @@ def generate_launch_description():
                               description="default: the Gazebo room, or delivery_zone.sim.txt with field:=synthetic"),
         DeclareLaunchArgument("extra_params_file", default_value="",
                               description="default: bc_sim/config/sim_mission.yaml (sim_lite.yaml with field:=synthetic)"),
+        DeclareLaunchArgument("camera", default_value="none",
+                              description="none (sim camera handles feed) | siyi (real SIYI A8 mini over Ethernet)"),
+        DeclareLaunchArgument("camera_src", default_value="",
+                              description="optional RTSP URL override, e.g. rtsp://192.168.144.25:8554/main.264"),
         DeclareLaunchArgument("hud", default_value="true"),
         DeclareLaunchArgument("show_window", default_value="true", description="OpenCV HUD window"),
         OpaqueFunction(function=launch_setup),

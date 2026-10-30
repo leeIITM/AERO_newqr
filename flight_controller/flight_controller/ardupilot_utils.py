@@ -346,7 +346,8 @@ def make_setpoint(stamp, mode, position=None, heading=float("nan"), velocity=Non
     is the one place that does the NED -> ENU swap.
     """
     msg = PositionTarget()
-    msg.header.stamp = stamp
+    if stamp is not None:
+        msg.header.stamp = stamp
     msg.coordinate_frame = PositionTarget.FRAME_LOCAL_NED
     mask = PositionTarget.IGNORE_AFX | PositionTarget.IGNORE_AFY | PositionTarget.IGNORE_AFZ
     if mode == "position":

@@ -29,9 +29,10 @@ def pick_terminal(choice):
     return choice
 
 
-def window_command(title, script, terminal, ros_setup="/opt/ros/jazzy/setup.bash", ws_setup="", env_lines=""):
+def window_command(title, script, terminal, ros_setup="", ws_setup="", env_lines=""):
     """Command list running bash `script` in a window titled `title` (terminal from pick_terminal), or
     in this process's terminal when terminal == 'none' (the last line is exec'd so it gets Ctrl+C)."""
+    ros_setup = ros_setup or os.environ.get("ROS_SETUP") or f"/opt/ros/{os.environ.get('ROS_DISTRO', 'humble')}/setup.bash"
     lines = [f"source {shlex.quote(ros_setup)}"]
     if ws_setup:
         lines.append(f"[ -f {shlex.quote(ws_setup)} ] && source {shlex.quote(ws_setup)}")

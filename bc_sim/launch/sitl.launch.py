@@ -176,7 +176,10 @@ def launch_setup(context):
                        delay=0.0, terminal=mavros_terminal))   # first: it waits for SITL by itself
 
     # ---------------------------------------------------------------- camera
-    if gazebo:
+    cam_choice = arg("camera").lower() if "camera" in context.launch_configurations else "auto"
+    if cam_choice in ("none", "siyi"):
+        out.append(LogInfo(msg=f"[sitl.launch] camera:={cam_choice}: skipping simulation camera (feed provided externally/by real camera)"))
+    elif gazebo:
         out.append(run("Camera bridge", "ros2 run ros_gz_bridge parameter_bridge "
                        "'/bc/down_camera/image@sensor_msgs/msg/Image[gz.msgs.Image' "
                        "--ros-args -r __node:=gz_camera_bridge", delay=4.0))
@@ -215,10 +218,16 @@ def generate_launch_description():
         DeclareLaunchArgument("world", default_value=WORLD),
         DeclareLaunchArgument("gui", default_value="true", description="gazebo: GUI (false = server, headless)"),
         DeclareLaunchArgument("gz_verbosity", default_value="2"),
+        DeclareLaunchArgument("camera", default_value="auto",
+                              description="auto (sim in lite, gz in gazebo) | siyi (real SIYI camera) | none"),
         DeclareLaunchArgument("ardupilot_dir", default_value=os.environ.get("ARDUPILOT_HOME", "~/ardupilot")),
         DeclareLaunchArgument("ardupilot_gazebo",
-                              default_value=os.environ.get("ARDUPILOT_GAZEBO_HOME", "~/ardupilot_gazebo")),
-        DeclareLaunchArgument("ros_setup", default_value="/opt/ros/jazzy/setup.bash"),
+                              default_value=os.environ.get("ARDUPILOT_GAZEBO_HOME",
+                                                           os.path.expanduser("~/gz_ws/src/ardupilot_gazebo")
+                                                           if os.path.exists(os.path.expanduser("~/gz_ws/src/ardupilot_gazebo"))
+                                                           else "~/ardupilot_gazebo")),
+        DeclareLaunchArgument("ros_setup",
+                              default_value=os.environ.get("ROS_SETUP", f"/opt/ros/{os.environ.get('ROS_DISTRO', 'humble')}/setup.bash")),
         DeclareLaunchArgument("ws_setup", default_value=WS_SETUP),
         DeclareLaunchArgument("home", default_value=HOME,
                               description="SITL home lat,lon,alt,heading (lite: the synthetic field's origin, "
